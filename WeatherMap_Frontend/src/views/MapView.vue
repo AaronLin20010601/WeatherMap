@@ -11,33 +11,18 @@ import 'leaflet/dist/leaflet.css'
 
 onMounted(async () => {
     await nextTick()
-    const response = await fetch('http://localhost:5200/api/weather/current')
-    const cities = await response.json()
 
     const map = L.map('map').setView([23.5, 121], 7)
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    const osmLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map)
 
-    // 顯示資訊
-    cities.forEach(city => {
-        const marker = L.marker([city.latitude, city.longitude]).addTo(map)
-
-        marker.bindPopup(`
-            <b>${city.location}</b><br>
-            Temperature: ${city.temperature}<br>
-            Wind speed: ${city.windSpeed}
-        `)
-
-        // 滑鼠鼠標移動到標點後顯示
-        marker.on('mouseover', function () {
-            this.openPopup()
-        })
-        marker.on('mouseout', function () {
-            this.closePopup()
-        })
-    })
+    // 從後端獲取雲層圖層的 URL
+    const tileLayerUrl = 'http://localhost:5200/api/weather/clouds_new/{z}/{x}/{y}.png';
+    const cloudLayer = L.tileLayer(tileLayerUrl, {
+        attribution: '&copy; OpenWeatherMap contributors'
+    }).addTo(map)
 
     // 等地圖容器掛上後重新計算尺寸
     setTimeout(() => {
@@ -47,12 +32,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.map-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-}
-
 #map {
     position: absolute;
     top: 0;

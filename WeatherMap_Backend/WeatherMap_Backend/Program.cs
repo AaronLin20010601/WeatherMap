@@ -1,5 +1,9 @@
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddMemoryCache();
+// µù¥U DI
+// Weather Service
+
 // µù¥U http client
 builder.Services.AddHttpClient();
 

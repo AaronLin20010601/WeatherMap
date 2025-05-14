@@ -13,6 +13,7 @@
         </button>
         </div>
         <div id="map"></div>
+        <component :is="getLegendComponent(selectedLayer)"/>
     </div>
 </template>
 
@@ -20,6 +21,12 @@
 import { onMounted, nextTick, ref } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import PrecipitationLegend from '@/components/PrecipitationLegend.vue'
+import TemperatureLegend from '@/components/TemperatureLegend.vue'
+import WindLegend from '@/components/WindLegend.vue'
+import PressureLegend from '@/components/PressureLegend.vue'
+import SnowLegend from '@/components/SnowLegend.vue'
+import RainLegend from '@/components/RainLegend.vue'
 
 // 圖層類型
 const weatherLayers = [
@@ -35,10 +42,29 @@ const weatherLayers = [
 const selectedLayer = ref('clouds_new')
 let map, weatherLayer
 
+// 根據 selectedLayer 返回對應的圖例組件
+const getLegendComponent = (layer) => {
+    const legends = {
+        'precipitation_new': PrecipitationLegend,
+        'temp_new': TemperatureLegend,
+        'wind_new': WindLegend,
+        'pressure_new': PressureLegend,
+        'snow': SnowLegend,
+        'rain': RainLegend
+    };
+    
+    return legends[layer] || null; // 如果未找到對應圖層，返回 null
+};
+
 onMounted(async () => {
     await nextTick()
 
-    map = L.map('map').setView([23.5, 121], 7)
+    map = L.map('map', {
+        center: [23.5, 121],
+        zoom: 7,
+        minZoom: 3,
+        maxZoom: 12
+    })
 
     // 地圖和地名
     const lightNoLabelsLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {

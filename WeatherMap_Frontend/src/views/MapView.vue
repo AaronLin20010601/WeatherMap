@@ -1,19 +1,34 @@
 <!-- 顯示地圖 -->
 <template>
-    <div class="map-container">
-        <div class="layer-buttons">
-        <button
-            v-for="layer in weatherLayers"
-            :key="layer.value"
-            :class="{ active: selectedLayer === layer.value }"
-            @click="updateWeatherLayer(layer.value)"
-        >
-            <img :src="layer.image" :alt="layer.label" />
-            <span>{{ layer.label }}</span>
-        </button>
+    <div class="relative w-screen h-screen">
+        <!-- 左側按鈕 -->
+        <div class="absolute top-1/2 left-2 z-[1000] flex flex-col items-center gap-2 bg-white/85 p-2 rounded-md -translate-y-1/2">
+            <button
+                v-for="layer in weatherLayers"
+                :key="layer.value"
+                :class="[
+                'flex flex-col items-center border-none bg-transparent cursor-pointer p-1 transition-transform',
+                selectedLayer === layer.value ? 'border-b-2 border-blue-500 scale-105' : ''
+                ]"
+                @click="updateWeatherLayer(layer.value)"
+            >
+                <img :src="layer.image" :alt="layer.label" class="w-6 h-6" />
+                <span class="text-xs">{{ layer.label }}</span>
+            </button>
         </div>
-        <div id="map"></div>
-        <component :is="getLegendComponent(selectedLayer)"/>
+
+        <!-- 地圖 -->
+        <div id="map" class="absolute inset-0 w-full h-full z-0"></div>
+
+        <!-- 經緯度 -->
+        <div
+        id="mouse-coordinates"
+        class="absolute bottom-2 left-2 px-3 py-1.5 text-white font-bold text-sm whitespace-nowrap drop-shadow-[0_0_1px_black] pointer-events-none z-[1000]"
+        >
+        Latitude: ---, Longitude: ---
+        </div>
+
+        <component :is="getLegendComponent(selectedLayer)" />
     </div>
 </template>
 
@@ -53,11 +68,21 @@ const getLegendComponent = (layer) => {
         'rain': RainLegend
     };
     
-    return legends[layer] || null; // 如果未找到對應圖層，返回 null
+    return legends[layer] || null;
 };
 
 onMounted(async () => {
     await nextTick()
+
+    const mapContainer = document.getElementById('map')
+
+    // 確保載入尺寸正確
+    const resizeObserver = new ResizeObserver(() => {
+        if (map) {
+        map.invalidateSize()
+        }
+    })
+    resizeObserver.observe(mapContainer)
 
     map = L.map('map', {
         center: [23.5, 121],
@@ -87,6 +112,15 @@ onMounted(async () => {
     setTimeout(() => {
         map.invalidateSize()
     }, 300)
+
+    // 經緯度顯示鼠標當前位置
+    map.on('mousemove', function (e) {
+        const { formattedLat, formattedLng } = formatLatLng(e.latlng.lat, e.latlng.lng)
+        const coordDiv = document.getElementById('mouse-coordinates')
+        if (coordDiv) {
+            coordDiv.innerText = `Latitude: ${formattedLat}, Longitude: ${formattedLng}`
+        }
+    })
 })
 
 // 加上天氣圖層
@@ -107,54 +141,15 @@ function updateWeatherLayer(layerValue) {
     selectedLayer.value = layerValue
     addWeatherLayer(layerValue)
 }
+
+// 經緯度顯示
+function formatLatLng(lat, lng) {
+    const latDir = lat >= 0 ? 'N' : 'S'
+    let normalizedLng = ((lng + 180) % 360 + 360) % 360 - 180
+    const lngDir = normalizedLng >= 0 ? 'E' : 'W'
+
+    const formattedLat = `${Math.abs(lat).toFixed(4)}° ${latDir}`
+    const formattedLng = `${Math.abs(normalizedLng).toFixed(4)}° ${lngDir}`
+    return { formattedLat, formattedLng }
+}
 </script>
-
-<style scoped>
-#map {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-}
-
-.layer-buttons {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255, 255, 255, 0.85);
-    padding: 6px 10px;
-    border-radius: 6px;
-    transform: translateY(-50%);
-}
-
-.layer-buttons button {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    padding: 4px;
-    transition: transform 0.2s;
-}
-
-.layer-buttons button.active {
-    border-bottom: 2px solid #007BFF;
-    transform: scale(1.05);
-}
-
-.layer-buttons img {
-    width: 24px;
-    height: 24px;
-}
-
-.layer-buttons span {
-    font-size: 12px;
-}
-</style>

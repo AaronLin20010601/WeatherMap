@@ -36,6 +36,7 @@
 import { onMounted, nextTick, ref } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import { addEarthquakeMarkers } from '@/utils/earthquake.js'
 import PrecipitationLegend from '@/components/PrecipitationLegend.vue'
 import TemperatureLegend from '@/components/TemperatureLegend.vue'
 import WindLegend from '@/components/WindLegend.vue'
@@ -51,11 +52,13 @@ const weatherLayers = [
     { value: 'wind_new', label: 'Wind', image: new URL('@/assets/icons/wind.png', import.meta.url).href },
     { value: 'pressure_new', label: 'Pressure', image: new URL('@/assets/icons/pressure.png', import.meta.url).href },
     { value: 'snow', label: 'Snow', image: new URL('@/assets/icons/snow.png', import.meta.url).href },
-    { value: 'rain', label: 'Rain', image: new URL('@/assets/icons/rain.png', import.meta.url).href }
+    { value: 'rain', label: 'Rain', image: new URL('@/assets/icons/rain.png', import.meta.url).href },
+    { value: 'earthquake', label: 'Earthquake', image: new URL('@/assets/icons/earthquake.png', import.meta.url).href }
 ]
 
 const selectedLayer = ref('clouds_new')
 let map, weatherLayer
+let earthquakeLayerGroup = null
 
 // 根據 selectedLayer 返回對應的圖例組件
 const getLegendComponent = (layer) => {
@@ -126,20 +129,42 @@ onMounted(async () => {
 // 加上天氣圖層
 function addWeatherLayer(layer) {
     const tileLayerUrl = `http://localhost:5200/api/weather/${layer}/{z}/{x}/{y}.png`
-
-    if (weatherLayer) {
-        map.removeLayer(weatherLayer)
-    }
-
     weatherLayer = L.tileLayer(tileLayerUrl, {
         attribution: '&copy; OpenWeatherMap contributors'
     }).addTo(map)
 }
 
 // 更新天氣圖層
-function updateWeatherLayer(layerValue) {
+async function updateWeatherLayer(layerValue) {
     selectedLayer.value = layerValue
-    addWeatherLayer(layerValue)
+    
+    // 清除舊的天氣圖層
+    if (weatherLayer) {
+        if (map.hasLayer(weatherLayer)) {
+            map.removeLayer(weatherLayer)
+        }
+        weatherLayer = null
+    }
+
+    // 清除舊的地震圖層
+    if (earthquakeLayerGroup) {
+        if (map.hasLayer(earthquakeLayerGroup)) {
+            map.removeLayer(earthquakeLayerGroup)
+        }
+        earthquakeLayerGroup = null
+    }
+
+    // 切換到地震圖層
+    if (layerValue === 'earthquake') {
+        const newGroup = await addEarthquakeMarkers(map)
+        console.log('earthquakeLayerGroup:', newGroup)
+        if (newGroup) {
+            earthquakeLayerGroup = newGroup
+            map.addLayer(earthquakeLayerGroup)
+        }
+    } else {
+        addWeatherLayer(layerValue)
+    }
 }
 
 // 經緯度顯示

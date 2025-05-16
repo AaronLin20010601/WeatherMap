@@ -65,6 +65,7 @@ npm run dev
   - Fetches earthquake data from USGS open API for the current day.
 
 3. Map display features:
+  - Uses CartoCDN as the base map for smooth and visually appealing rendering.
   - Interactive weather map display using tile-based overlays.
   - Shows current mouse location's latitude and longitude.
   - Displays a color scale bar for the selected data layer, showing value ranges for better reference.

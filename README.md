@@ -12,7 +12,8 @@ vue.js
 ### Vue Frontend:
 - Tailwindcss:For css styling
 - Pinia:For data storage and sync
-- Leaflet:For map display
+- Leaflet:For map displaying
+- vue-i18n:For multiple languages supporting
 
 -----
 ## Project setup and compile on development
@@ -35,7 +36,7 @@ cd WeatherMap
 npm create vite@latest WeatherMap_Frontend
 ```  
 Select framework as vue, choose variant as Offical Vue Starter.  
-Select Router and ESLint.  
+Select Router, Pinia and ESLint.  
 ```sh
 npm install
 ```  
@@ -69,3 +70,14 @@ npm run dev
   - Interactive weather map display using tile-based overlays.
   - Shows current mouse location's latitude and longitude.
   - Displays a color scale bar for the selected data layer, showing value ranges for better reference.
+
+4. Support multiple languages:
+  - Users can switching different languages if needed.
+
+5. Reserve selected filter:
+  - The language, base map and weather layer that user selected are store in local storage via pinia.
+
+-----
+## Usage Limitations
+Due to the limitations of free-tier services and API usage quotas, this project is subject to the following usage frequency restrictions:  
+1. This project can only fetch 1000 weather data and tiles per day, and 60 calls per minute in OpenWeatherMap's free plan.

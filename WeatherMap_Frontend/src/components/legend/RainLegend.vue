@@ -2,7 +2,7 @@
     <LegendBar
     title="Rain"
     :colors="[
-        { hex: '#DEE0E0', label: 'light' },
+        { hex: '#DEE0E0', label: 'rain_low' },
         { hex: '#B8BABA', label: '' },
         { hex: '#84888A', label: '' },
         { hex: '#4190F0', label: '' },
@@ -10,7 +10,7 @@
         { hex: '#A8EDA3', label: '' },
         { hex: '#F2C363', label: '' },
         { hex: '#D84D42', label: '' },
-        { hex: '#CC6B6B', label: 'heavy' }
+        { hex: '#CC6B6B', label: 'rain_high' }
     ]"
 />
 </template>

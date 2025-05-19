@@ -4,12 +4,14 @@
         v-if="lat !== null && lng !== null"
         class="absolute bottom-2 left-2 px-3 py-1.5 text-white font-bold text-sm whitespace-nowrap drop-shadow-[0_0_1px_black] pointer-events-none z-[1000]"
     >
-        Latitude: {{ formattedLatitude }}, Longitude: {{ formattedLongitude }}
+        {{ t('coordinates.lat') }}: {{ formattedLatitude }}, {{ t('coordinates.lng') }}: {{ formattedLongitude }}
     </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const props = defineProps({
     lat: Number,

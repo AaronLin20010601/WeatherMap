@@ -1,6 +1,6 @@
 <template>
     <LegendBar
-    title="Temperature (°C)"
+    title="Temperature"
     :colors="[
         { hex: '#D6B8DC', label: -40 },
         { hex: '#D6BFE4', label: -30 },

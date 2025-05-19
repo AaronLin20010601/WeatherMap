@@ -1,0 +1,39 @@
+{
+    "language": "Language",
+    "map": "Map type",
+    "layers": {
+        "clouds_new": "Clouds",
+        "precipitation_new": "Precipitation",
+        "temp_new": "Temperature",
+        "wind_new": "Wind",
+        "pressure_new": "Pressure",
+        "snow": "Snow",
+        "rain": "Rain",
+        "earthquake": "Earthquake"
+    },
+    "legends": {
+        "Precipitation": "Precipitation",
+        "Temperature": "Temperature (°C)",
+        "Wind": "Wind",
+        "Pressure": "Pressure (hPa)",
+        "Snow": "Snow",
+        "Rain": "Rain",
+        "precipitation_low": "light",
+        "precipitation_high": "heavy",
+        "wind_low": "light",
+        "wind_high": "strong",
+        "rain_low": "light",
+        "rain_high": "heavy",
+        "snow_low": "light",
+        "snow_high": "heavy"
+    },
+    "coordinates": {
+        "lat": "Latitude",
+        "lng": "Longitude"
+    },
+    "earthquake": {
+        "intensity": "Intensity",
+        "position": "Position",
+        "time": "Time"
+    }
+}

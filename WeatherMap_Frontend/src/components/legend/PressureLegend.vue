@@ -1,6 +1,6 @@
 <template>
     <LegendBar
-    title="Pressure (hPa)"
+    title="Pressure"
     :colors="[
         { hex: '#7FC1EA', label: 970 },
         { hex: '#A1D7D8', label: 985 },

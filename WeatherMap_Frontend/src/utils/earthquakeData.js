@@ -1,7 +1,7 @@
 import L from 'leaflet'
 
 // 在地圖上加上地震發生點
-export async function addEarthquakeMarkers(map) {
+export async function addEarthquakeMarkers(map, t) {
     if (!map) return
 
     // 取得今天日期
@@ -59,9 +59,9 @@ export async function addEarthquakeMarkers(map) {
                 // 地震資訊內容
                 marker.bindPopup(`
                 <div>
-                    <strong>Intensity:</strong> ${mag} <br/>
-                    <strong>Position:</strong> ${place} <br/>
-                    <strong>Time:</strong> ${time}
+                    <strong>${t('earthquake.intensity')}:</strong> ${mag} <br/>
+                    <strong>${t('earthquake.position')}:</strong> ${place} <br/>
+                    <strong>${t('earthquake.time')}:</strong> ${time}
                 </div>
                 `)
 
@@ -95,5 +95,12 @@ export async function addEarthquakeMarkers(map) {
     } catch (error) {
         console.error('Error loading earthquake data:', error)
         return null
+    }
+}
+
+// 移除舊地震發生點
+export async function removeEarthquakeLayer(map, layerGroup) {
+    if (layerGroup && map.hasLayer(layerGroup)) {
+        map.removeLayer(layerGroup)
     }
 }

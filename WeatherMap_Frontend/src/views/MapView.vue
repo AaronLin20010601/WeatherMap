@@ -17,7 +17,7 @@
         <MouseCoordinates :lat="mouseLatitude" :lng="mouseLongitude" />
 
         <!-- 範圍色條 -->
-        <DisplayLegend :layer="selectedLayer" />
+        <DisplayLegend/>
     </div>
 </template>
 
@@ -29,12 +29,15 @@ import { useI18n } from 'vue-i18n'
 import { loadMap } from '@/utils/baseMap.js'
 import { addEarthquakeMarkers, removeEarthquakeLayer } from '@/utils/earthquakeData.js'
 import { addWeatherLayer, removeWeatherLayer } from '@/utils/weatherLayer.js'
-import { useBaseMapStore, useWeatherLayerStore } from '@/stores/index.js'
+import { useBaseMapStore, useWeatherLayerStore, useMapViewStore } from '@/stores/index.js'
 import LayerSwitcher from '@/components/LayerSwitcher.vue'
 import MouseCoordinates from '@/components/MouseCoordinates.vue'
 import DisplayLegend from '@/components/legend/DisplayLegend.vue'
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 import BaseMapSwitcher from '@/components/BaseMapSwitcher.vue'
+
+// 地圖中心和縮放尺度
+const mapViewStore = useMapViewStore()
 
 // 基底地圖
 const baseMapStore = useBaseMapStore()
@@ -68,8 +71,8 @@ onMounted(async () => {
     resizeObserver.observe(mapContainer)
 
     map = L.map('map', {
-        center: [23.5, 121],
-        zoom: 7,
+        center: mapViewStore.center,
+        zoom: mapViewStore.zoom,
         minZoom: 3,
         maxZoom: 10
     })
@@ -91,6 +94,17 @@ onMounted(async () => {
     map.on('mousemove', function (e) {
         mouseLatitude.value = e.latlng.lat
         mouseLongitude.value = e.latlng.lng
+    })
+
+    // 當前地圖中心和縮放尺度
+    map.on('moveend', () => {
+        const center = map.getCenter()
+        mapViewStore.setCenter(center.lat, center.lng)
+    })
+
+    map.on('zoomend', () => {
+        const zoom = map.getZoom()
+        mapViewStore.setZoom(zoom)
     })
 })
 

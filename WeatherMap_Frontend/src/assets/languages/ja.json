@@ -6,7 +6,7 @@
         "precipitation_new": "総降水量",
         "temp_new": "気温",
         "wind_new": "風速",
-        "pressure_new": "気圧",
+        "pressure_new": "大気圧",
         "snow": "降雪",
         "rain": "降雨",
         "earthquake": "震源地"
@@ -15,7 +15,7 @@
         "Precipitation": "総降水量",
         "Temperature": "温度 (摂氏)",
         "Wind": "風速",
-        "Pressure": "気圧 (hPa)",
+        "Pressure": "大気圧 (hPa)",
         "Snow": "降雪",
         "Rain": "降雨",
         "precipitation_low": "少",

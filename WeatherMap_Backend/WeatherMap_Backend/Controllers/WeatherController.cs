@@ -25,6 +25,7 @@ namespace WeatherMap_Backend.Controllers
 
             if (_cache.TryGetValue<byte[]>(cacheKey, out var cachedData))
             {
+                Console.WriteLine($"[CACHE HIT] {cacheKey} @ {DateTime.Now}");
                 return File(cachedData, "image/png");
             }
 
@@ -39,8 +40,18 @@ namespace WeatherMap_Backend.Controllers
 
             var tileBytes = await response.Content.ReadAsByteArrayAsync();
 
-            // 快取設定：保留 1 小時
-            _cache.Set(cacheKey, tileBytes, TimeSpan.FromHours(1));
+            // 快取保留至下個整點
+            DateTimeOffset now = DateTimeOffset.Now;
+            DateTimeOffset nextHour = new DateTimeOffset(
+                now.Year, now.Month, now.Day, now.Hour, 0, 0, now.Offset
+            ).AddHours(1);
+
+            var cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = nextHour
+            };
+
+            _cache.Set(cacheKey, tileBytes, cacheEntryOptions);
 
             return File(tileBytes, "image/png");
         }

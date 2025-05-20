@@ -1,0 +1,39 @@
+{
+    "language": "언어",
+    "map": "지도 유형",
+    "layers": {
+        "clouds_new": "구름 층",
+        "precipitation_new": "총 강수량",
+        "temp_new": "온도",
+        "wind_new": "풍속",
+        "pressure_new": "기압",
+        "snow": "눈이 내리다",
+        "rain": "강우",
+        "earthquake": "지진점"
+    },
+    "legends": {
+        "Precipitation": "총 강수량",
+        "Temperature": "온도 (섭씨)",
+        "Wind": "풍속",
+        "Pressure": "기압 (hPa)",
+        "Snow": "눈이 내리다",
+        "Rain": "강우",
+        "precipitation_low": "적은",
+        "precipitation_high": "많은",
+        "wind_low": "약하다",
+        "wind_high": "강하다",
+        "rain_low": "적은",
+        "rain_high": "많은",
+        "snow_low": "적은",
+        "snow_high": "많은"
+    },
+    "coordinates": {
+        "lat": "위도",
+        "lng": "경도"
+    },
+    "earthquake": {
+        "intensity": "진도",
+        "position": "위치",
+        "time": "시간"
+    }
+}

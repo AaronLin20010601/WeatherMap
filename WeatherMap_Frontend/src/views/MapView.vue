@@ -56,6 +56,7 @@ const selectedLayer = computed({
 // 鼠標經緯度
 const mouseLatitude = ref(null)
 const mouseLongitude = ref(null)
+
 const { t, locale } = useI18n()
 let map
 let earthquakeLayerGroup = null
@@ -144,7 +145,7 @@ watch(selectedLayer, (newLayer) => {
 })
 
 // 更新地震資訊框語言
-watch(locale, async (newLocale, oldLocale) => {
+watch(locale, async () => {
     if (selectedLayer.value === 'earthquake' && map) {
         // 移除舊的地震圖層
         await removeEarthquakeLayer(map, earthquakeLayerGroup)

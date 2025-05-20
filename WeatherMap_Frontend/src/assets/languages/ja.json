@@ -1,0 +1,39 @@
+{
+    "language": "言語",
+    "map": "地図の種類",
+    "layers": {
+        "clouds_new": "雲層",
+        "precipitation_new": "総降水量",
+        "temp_new": "気温",
+        "wind_new": "風速",
+        "pressure_new": "気圧",
+        "snow": "降雪",
+        "rain": "降雨",
+        "earthquake": "震源地"
+    },
+    "legends": {
+        "Precipitation": "総降水量",
+        "Temperature": "温度 (摂氏)",
+        "Wind": "風速",
+        "Pressure": "気圧 (hPa)",
+        "Snow": "降雪",
+        "Rain": "降雨",
+        "precipitation_low": "少",
+        "precipitation_high": "多",
+        "wind_low": "弱",
+        "wind_high": "強",
+        "rain_low": "少",
+        "rain_high": "多",
+        "snow_low": "少",
+        "snow_high": "多"
+    },
+    "coordinates": {
+        "lat": "緯度",
+        "lng": "經度"
+    },
+    "earthquake": {
+        "intensity": "震度",
+        "position": "位置",
+        "time": "時間"
+    }
+}

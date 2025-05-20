@@ -6,7 +6,10 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import en from '@/assets/languages/en'
-import zhTW from '@/assets/languages/zhTW'
+import zhtw from '@/assets/languages/zh-tw'
+import zh from '@/assets/languages/zh'
+import ja from '@/assets/languages/ja'
+import ko from '@/assets/languages/ko'
 
 // 初始語言設定
 const i18n = createI18n({
@@ -15,7 +18,10 @@ const i18n = createI18n({
     fallbackLocale: 'en',
     messages: {
         en,
-        'zh-TW': zhTW
+        'zh-tw': zhtw,
+        'zh': zh,
+        'ja': ja,
+        'ko': ko
     }
 })
 

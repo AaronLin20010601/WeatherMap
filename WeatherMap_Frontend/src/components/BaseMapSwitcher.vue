@@ -11,6 +11,7 @@
         >
             <option value="carto">Carto</option>
             <option value="osm">OSM</option>
+            <option value="esri">Esri</option>
         </select>
     </div>
 </template>

@@ -1,0 +1,39 @@
+{
+    "language": "语言",
+    "map": "地图类型",
+    "layers": {
+        "clouds_new": "云层",
+        "precipitation_new": "总降水",
+        "temp_new": "温度",
+        "wind_new": "风速",
+        "pressure_new": "气压",
+        "snow": "降雪",
+        "rain": "降雨",
+        "earthquake": "震源"
+    },
+    "legends": {
+        "Precipitation": "总降水",
+        "Temperature": "温度 (摄氏)",
+        "Wind": "风速",
+        "Pressure": "气压 (百帕)",
+        "Snow": "降雪",
+        "Rain": "降雨",
+        "precipitation_low": "少",
+        "precipitation_high": "多",
+        "wind_low": "弱",
+        "wind_high": "强",
+        "rain_low": "少",
+        "rain_high": "多",
+        "snow_low": "少",
+        "snow_high": "多"
+    },
+    "coordinates": {
+        "lat": "纬度",
+        "lng": "经度"
+    },
+    "earthquake": {
+        "intensity": "震度",
+        "position": "位置",
+        "time": "时间"
+    }
+}

@@ -8,7 +8,7 @@
         <select
             :value="languageStore.currentLanguage"
             @change="changeLanguage($event.target.value)"
-            class="text-black bg-white border border-gray-300 rounded px-2 py-1"
+            class="text-black bg-white/85 border border-gray-300 rounded px-2 py-1"
             title="Select Language"
             >
             <option value="en">English</option>

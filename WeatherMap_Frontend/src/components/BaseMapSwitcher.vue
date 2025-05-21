@@ -5,7 +5,7 @@
             {{ t('map') }}
         </div>
         <select
-            class="text-black bg-white border border-gray-300 rounded px-2 py-1"
+            class="text-black bg-white/85 border border-gray-300 rounded px-2 py-1"
             :value="selectedBaseMap"
             @change="changeMap($event.target.value)"
         >

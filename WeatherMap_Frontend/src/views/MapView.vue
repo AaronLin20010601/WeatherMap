@@ -10,6 +10,9 @@
         <!-- 地圖切換 -->
         <BaseMapSwitcher/>
 
+        <!-- 晨昏線顯示 -->
+        <TerminatorSwitcher />
+
         <!-- 地圖 -->
         <div id="map" class="absolute inset-0 w-full h-full z-0"></div>
 
@@ -29,12 +32,16 @@ import { useI18n } from 'vue-i18n'
 import { loadMap } from '@/utils/baseMap.js'
 import { addEarthquakeMarkers, removeEarthquakeLayer } from '@/utils/earthquakeData.js'
 import { addWeatherLayer, removeWeatherLayer } from '@/utils/weatherLayer.js'
-import { useBaseMapStore, useWeatherLayerStore, useMapViewStore } from '@/stores/index.js'
+import { drawTerminatorLine } from '@/utils/nightBoundary.js'
+import { useBaseMapStore, useWeatherLayerStore, useMapViewStore, useTerminatorStore } from '@/stores/index.js'
 import LayerSwitcher from '@/components/LayerSwitcher.vue'
-import MouseCoordinates from '@/components/MouseCoordinates.vue'
-import DisplayLegend from '@/components/legend/DisplayLegend.vue'
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 import BaseMapSwitcher from '@/components/BaseMapSwitcher.vue'
+import TerminatorSwitcher from '@/components/TerminatorSwitcher.vue'
+import MouseCoordinates from '@/components/MouseCoordinates.vue'
+import DisplayLegend from '@/components/legend/DisplayLegend.vue'
+
+const { t, locale } = useI18n()
 
 // 地圖中心和縮放尺度
 const mapViewStore = useMapViewStore()
@@ -57,9 +64,20 @@ const selectedLayer = computed({
 const mouseLatitude = ref(null)
 const mouseLongitude = ref(null)
 
-const { t, locale } = useI18n()
+// 地圖
 let map
+
+// 地震點位
 let earthquakeLayerGroup = null
+
+// 晨昏線點位和黑夜遮罩
+let terminatorPolylines = []
+let nightPolygons = []
+const terminatorStore = useTerminatorStore()
+const isShowTerminator = computed({
+    get: () => terminatorStore.isShowTerminator,
+    set: (val) => terminatorStore.setShowTerminator(val)
+})
 
 onMounted(async () => {
     await nextTick()
@@ -88,8 +106,10 @@ onMounted(async () => {
         addWeatherLayer(map, selectedLayer.value)
     }
 
-    // 等地圖容器掛上後重新計算尺寸
-    setTimeout(() => { map.invalidateSize() }, 300)
+    // 加入晨昏線
+    map.whenReady(() => {
+        updateTerminatorLine(isShowTerminator.value)
+    })
 
     // 經緯度顯示鼠標當前位置
     map.on('mousemove', function (e) {
@@ -101,11 +121,13 @@ onMounted(async () => {
     map.on('moveend', () => {
         const center = map.getCenter()
         mapViewStore.setCenter(center.lat, center.lng)
+        updateTerminatorLine(isShowTerminator.value)
     })
 
     map.on('zoomend', () => {
         const zoom = map.getZoom()
         mapViewStore.setZoom(zoom)
+        updateTerminatorLine(isShowTerminator.value)
     })
 })
 
@@ -131,6 +153,21 @@ async function updateWeatherLayer(layerValue) {
     }
 }
 
+// 更新晨昏線資料
+function updateTerminatorLine(status) {
+    isShowTerminator.value = status
+
+    if (isShowTerminator.value === 'enabled') {
+        drawTerminatorLine(map, terminatorPolylines, nightPolygons)
+    } else {
+        // 清除所有晨昏線和黑夜遮罩圖層
+        terminatorPolylines.forEach((polyline) => map.removeLayer(polyline))
+        nightPolygons.forEach((polygon) => map.removeLayer(polygon))
+        terminatorPolylines = []
+        nightPolygons = []
+    }
+}
+
 // 切換地圖來源時重新載入
 watch(selectedBaseMap, (newValue) => {
     loadMap(map, newValue)
@@ -142,6 +179,11 @@ watch(selectedLayer, (newLayer) => {
     if (map) {
         updateWeatherLayer(newLayer)
     }
+})
+
+// 開關晨昏線時重新載入
+watch(isShowTerminator, (newStatus) => {
+    updateTerminatorLine(newStatus)
 })
 
 // 更新地震資訊框語言

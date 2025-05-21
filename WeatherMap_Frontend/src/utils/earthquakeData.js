@@ -76,8 +76,8 @@ export async function addEarthquakeMarkers(map, t) {
             const east = bounds.getEast()
 
             const earthWidth = 360
-            const startShift = Math.floor(west / earthWidth) * earthWidth
-            const endShift = Math.floor(east / earthWidth) * earthWidth
+            const startShift = Math.floor(west / earthWidth) * earthWidth - earthWidth
+            const endShift = Math.floor(east / earthWidth) * earthWidth + earthWidth
 
             for (let shift = startShift; shift <= endShift; shift += earthWidth) {
                 if (!earthquakeLngShifts.has(shift)) {

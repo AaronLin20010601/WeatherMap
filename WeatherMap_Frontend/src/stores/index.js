@@ -15,11 +15,12 @@ export const useLanguageStore = defineStore('language', {
 // 暫存基底地圖
 export const useBaseMapStore = defineStore('baseMap', {
     state: () => ({
-        selectedBaseMap: 'carto'
+        selectedBaseMap: localStorage.getItem('base_map') || 'carto'
     }),
     actions: {
         setBaseMap(baseMap) {
             this.selectedBaseMap = baseMap
+            localStorage.setItem('base_map', baseMap)
         }
     }
 })
@@ -27,11 +28,12 @@ export const useBaseMapStore = defineStore('baseMap', {
 // 暫存天氣圖層
 export const useWeatherLayerStore = defineStore('weatherLayer', {
     state: () => ({
-        selectedLayer: 'clouds_new'
+        selectedLayer: localStorage.getItem('weather_layer') || 'clouds_new'
     }),
     actions: {
         setWeatherLayer(layer) {
             this.selectedLayer = layer
+            localStorage.setItem('weather_layer', layer)
         }
     }
 })
@@ -60,6 +62,19 @@ export const useMapViewStore = defineStore('mapView', {
             this.zoom = zoomLevel
             localStorage.setItem('map_center', JSON.stringify(this.center))
             localStorage.setItem('map_zoom', this.zoom.toString())
+        }
+    }
+})
+
+// 暫存晨昏線開關
+export const useTerminatorStore = defineStore('terminator', {
+    state: () => ({
+        isShowTerminator: localStorage.getItem('night_boundary') || 'enabled'
+    }),
+    actions: {
+        setShowTerminator(terminator) {
+            this.isShowTerminator = terminator
+            localStorage.setItem('night_boundary', terminator)
         }
     }
 })

@@ -1,6 +1,11 @@
 {
     "language": "语言",
     "map": "地图类型",
+    "terminator": {
+        "night_boundary": "晨昏线",
+        "enabled": "显示",
+        "disabled": "关闭"
+    },
     "layers": {
         "clouds_new": "云层",
         "precipitation_new": "总降水",

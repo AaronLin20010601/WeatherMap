@@ -1,6 +1,11 @@
 {
     "language": "言語",
     "map": "地図の種類",
+    "terminator": {
+        "night_boundary": "夜の境界",
+        "enabled": "表示",
+        "disabled": "無効"
+    },
     "layers": {
         "clouds_new": "雲層",
         "precipitation_new": "総降水量",

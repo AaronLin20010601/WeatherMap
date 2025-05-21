@@ -1,6 +1,11 @@
 {
     "language": "Language",
     "map": "Map type",
+    "terminator": {
+        "night_boundary": "Night boundary",
+        "enabled": "Enabled",
+        "disabled": "Disabled"
+    },
     "layers": {
         "clouds_new": "Clouds",
         "precipitation_new": "Precipitation",

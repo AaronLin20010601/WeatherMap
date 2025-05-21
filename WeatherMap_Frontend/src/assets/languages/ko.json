@@ -1,6 +1,11 @@
 {
     "language": "언어",
     "map": "지도 유형",
+    "terminator": {
+        "night_boundary": "밤 경계",
+        "enabled": "밤 경계 표시됨",
+        "disabled": "밤 경계 삭제됨"
+    },
     "layers": {
         "clouds_new": "구름 층",
         "precipitation_new": "총 강수량",

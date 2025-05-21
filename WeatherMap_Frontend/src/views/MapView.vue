@@ -25,14 +25,14 @@
 </template>
 
 <script setup>
-import { onMounted, nextTick, ref, watch, computed } from 'vue'
+import { onMounted, onUnmounted, nextTick, ref, watch, computed } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useI18n } from 'vue-i18n'
 import { loadMap } from '@/utils/baseMap.js'
 import { addEarthquakeMarkers, removeEarthquakeLayer } from '@/utils/earthquakeData.js'
 import { addWeatherLayer, removeWeatherLayer } from '@/utils/weatherLayer.js'
-import { drawTerminatorLine } from '@/utils/nightBoundary.js'
+import { updateTerminatorLine } from '@/utils/nightBoundary.js'
 import { useBaseMapStore, useWeatherLayerStore, useMapViewStore, useTerminatorStore } from '@/stores/index.js'
 import LayerSwitcher from '@/components/LayerSwitcher.vue'
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
@@ -73,10 +73,15 @@ let earthquakeLayerGroup = null
 // 晨昏線點位和黑夜遮罩
 let terminatorPolylines = []
 let nightPolygons = []
+let terminatorInterval = null
 const terminatorStore = useTerminatorStore()
 const isShowTerminator = computed({
     get: () => terminatorStore.isShowTerminator,
     set: (val) => terminatorStore.setShowTerminator(val)
+})
+
+onUnmounted(() => {
+    stopTerminatorAutoUpdate()
 })
 
 onMounted(async () => {
@@ -108,7 +113,19 @@ onMounted(async () => {
 
     // 加入晨昏線
     map.whenReady(() => {
-        updateTerminatorLine(isShowTerminator.value)
+        updateTerminatorLine(map, isShowTerminator.value, terminatorPolylines, nightPolygons)
+    })
+
+    // 自動更新晨昏線
+    startTerminatorAutoUpdate()
+
+    watch(isShowTerminator, (newStatus) => {
+        updateTerminatorLine(map, newStatus, terminatorPolylines, nightPolygons)
+        if (newStatus === 'enabled') {
+            startTerminatorAutoUpdate()
+        } else {
+            stopTerminatorAutoUpdate()
+        }
     })
 
     // 經緯度顯示鼠標當前位置
@@ -121,13 +138,13 @@ onMounted(async () => {
     map.on('moveend', () => {
         const center = map.getCenter()
         mapViewStore.setCenter(center.lat, center.lng)
-        updateTerminatorLine(isShowTerminator.value)
+        updateTerminatorLine(map, isShowTerminator.value, terminatorPolylines, nightPolygons)
     })
 
     map.on('zoomend', () => {
         const zoom = map.getZoom()
         mapViewStore.setZoom(zoom)
-        updateTerminatorLine(isShowTerminator.value)
+        updateTerminatorLine(map, isShowTerminator.value, terminatorPolylines, nightPolygons)
     })
 })
 
@@ -153,18 +170,21 @@ async function updateWeatherLayer(layerValue) {
     }
 }
 
-// 更新晨昏線資料
-function updateTerminatorLine(status) {
-    isShowTerminator.value = status
+// 每分鐘自動更新晨昏線
+function startTerminatorAutoUpdate() {
+    if (terminatorInterval) return
+    terminatorInterval = setInterval(() => {
+        if (isShowTerminator.value === 'enabled') {
+            updateTerminatorLine(map, isShowTerminator.value, terminatorPolylines, nightPolygons)
+        }
+    }, 60 * 1000)
+}
 
-    if (isShowTerminator.value === 'enabled') {
-        drawTerminatorLine(map, terminatorPolylines, nightPolygons)
-    } else {
-        // 清除所有晨昏線和黑夜遮罩圖層
-        terminatorPolylines.forEach((polyline) => map.removeLayer(polyline))
-        nightPolygons.forEach((polygon) => map.removeLayer(polygon))
-        terminatorPolylines = []
-        nightPolygons = []
+// 停止計算更新晨昏線
+function stopTerminatorAutoUpdate() {
+    if (terminatorInterval) {
+        clearInterval(terminatorInterval)
+        terminatorInterval = null
     }
 }
 
@@ -183,7 +203,7 @@ watch(selectedLayer, (newLayer) => {
 
 // 開關晨昏線時重新載入
 watch(isShowTerminator, (newStatus) => {
-    updateTerminatorLine(newStatus)
+    updateTerminatorLine(map, newStatus, terminatorPolylines, nightPolygons)
 })
 
 // 更新地震資訊框語言

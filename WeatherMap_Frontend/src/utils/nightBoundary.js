@@ -72,7 +72,7 @@ function drawNightOverlay(map, points, shift) {
 }
 
 // 繪製晨昏線
-export function drawTerminatorLine(map, terminatorPolylines, nightPolygons) {
+function drawTerminatorLine(map, terminatorPolylines, nightPolygons) {
     if (!map) return
 
     const date = new Date()
@@ -127,5 +127,18 @@ export function drawTerminatorLine(map, terminatorPolylines, nightPolygons) {
             const nightPoly = drawNightOverlay(map, points, shift)
             nightPolygons.push(nightPoly)
         }
+    }
+}
+
+// 更新晨昏線資料
+export function updateTerminatorLine(map, status, polylines, polygons) {
+    // 清除所有晨昏線和黑夜遮罩圖層
+    polylines.forEach(polyline => map.removeLayer(polyline))
+    polygons.forEach(polygon => map.removeLayer(polygon))
+    polylines.length = 0
+    polygons.length = 0
+
+    if (status === 'enabled') {
+        drawTerminatorLine(map, polylines, polygons)
     }
 }

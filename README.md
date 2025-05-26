@@ -11,6 +11,8 @@ vue.js
 ## Additional packages added
 ### Vue Frontend:
 - Tailwindcss:For css styling
+- PostCSS:For transforming and processing CSS with plugins
+- Autoprefixer:A PostCSS plugin that adds vendor prefixes automatically for better browser compatibility
 - Pinia:For data storage and sync
 - Leaflet:For map displaying
 - vue-i18n:For multiple languages supporting
